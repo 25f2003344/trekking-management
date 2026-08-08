@@ -1,0 +1,52 @@
+{% extends 'admin/base_admin.html' %}
+{% block bodyclass %}bg-admin{% endblock %}
+{% block title %}Manage Treks - Admin{% endblock %}
+{% block admin_content %}
+<h2 class="page-title">&#9968; Manage Treks</h2>
+
+<div class="search-bar">
+    <form action="{{ url_for('admin_treks') }}" method="get" style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+        <input type="text" name="q" value="{{ q }}" placeholder="Search name or location...">
+        <button type="submit" class="btn btn-blue btn-sm">Search</button>
+        {% if q %}<a href="{{ url_for('admin_treks') }}" class="btn btn-grey btn-sm">Clear</a>{% endif %}
+    </form>
+    <a href="{{ url_for('admin_add_trek') }}" class="btn btn-green btn-sm" style="margin-left:auto;">+ Add Trek</a>
+</div>
+
+{% if treks %}
+<div class="table-wrap">
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th><th>Name</th><th>Location</th><th>Difficulty</th>
+                <th>Duration</th><th>Slots</th><th>Status</th><th>Staff</th><th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for trek in treks %}
+        <tr>
+            <td style="color:#999;">#{{ trek.id }}</td>
+            <td><b>{{ trek.name }}</b></td>
+            <td>{{ trek.location }}</td>
+            <td><span class="badge badge-{{ trek.difficulty | lower }}">{{ trek.difficulty }}</span></td>
+            <td>{{ trek.duration }}d</td>
+            <td>{{ trek.available_slots }}/{{ trek.total_slots }}</td>
+            <td><span class="badge badge-{{ trek.status | lower }}">{{ trek.status }}</span></td>
+            <td>{% if trek.assigned_staff %}{{ trek.assigned_staff.username }}{% else %}<span style="color:#aaa;">—</span>{% endif %}</td>
+            <td>
+                <a href="{{ url_for('admin_edit_trek', trek_id=trek.id) }}" class="btn btn-blue btn-sm">Edit</a>
+                <a href="{{ url_for('admin_assign_staff', trek_id=trek.id) }}" class="btn btn-amber btn-sm">Assign</a>
+                <form action="{{ url_for('admin_delete_trek', trek_id=trek.id) }}" method="post" style="display:inline;"
+                      onsubmit="return confirm('Delete this trek?');">
+                    <button type="submit" class="btn btn-red btn-sm">Delete</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="alert alert-info">No treks found.</div>
+{% endif %}
+{% endblock %}

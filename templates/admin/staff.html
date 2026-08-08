@@ -1,0 +1,56 @@
+{% extends 'admin/base_admin.html' %}
+{% block bodyclass %}bg-admin{% endblock %}
+{% block title %}Manage Staff - Admin{% endblock %}
+{% block admin_content %}
+<h2 class="page-title">&#128119; Manage Trek Staff</h2>
+
+<div class="search-bar">
+    <form action="{{ url_for('admin_staff') }}" method="get" style="display:flex; gap:8px; align-items:center;">
+        <input type="text" name="q" value="{{ q }}" placeholder="Search by name or email...">
+        <button type="submit" class="btn btn-blue btn-sm">Search</button>
+        {% if q %}<a href="{{ url_for('admin_staff') }}" class="btn btn-grey btn-sm">Clear</a>{% endif %}
+    </form>
+</div>
+
+{% if staff_list %}
+<div class="table-wrap">
+    <table>
+        <thead>
+            <tr><th>ID</th><th>Username</th><th>Email</th><th>Phone</th><th>Status</th><th>Approval</th><th>Assigned Treks</th><th>Actions</th></tr>
+        </thead>
+        <tbody>
+        {% for staff in staff_list %}
+        <tr>
+            <td style="color:#999;">#{{ staff.id }}</td>
+            <td><b>{{ staff.username }}</b></td>
+            <td>{{ staff.email }}</td>
+            <td>{{ staff.phone or '—' }}</td>
+            <td><span class="badge badge-{{ staff.status }}">{{ staff.status }}</span></td>
+            <td><span class="badge badge-{{ staff.approval_status }}">{{ staff.approval_status }}</span></td>
+            <td>
+                {% if staff.assigned_treks %}
+                    {% for t in staff.assigned_treks %}{{ t.name }}{% if not loop.last %}, {% endif %}{% endfor %}
+                {% else %}—{% endif %}
+            </td>
+            <td>
+                {% if staff.approval_status == 'pending' %}
+                <form action="{{ url_for('admin_approve_staff', user_id=staff.id) }}" method="post" style="display:inline;">
+                    <button type="submit" class="btn btn-green btn-sm">Approve</button>
+                </form>
+                {% endif %}
+                {% if staff.status == 'active' %}
+                <form action="{{ url_for('admin_blacklist_staff', user_id=staff.id) }}" method="post" style="display:inline;"
+                      onsubmit="return confirm('Blacklist {{ staff.username }}?');">
+                    <button type="submit" class="btn btn-red btn-sm">Blacklist</button>
+                </form>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="alert alert-info">No staff members found.</div>
+{% endif %}
+{% endblock %}

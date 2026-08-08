@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block bodyclass %}bg-login{% endblock %}
+{% block title %}Login - TrekManager{% endblock %}
+{% block content %}
+<div style="background: linear-gradient(135deg, #1a6b5a 0%, #2e86ab 40%, #f5a623 100%); min-height: 90vh; display: flex; align-items: center; justify-content: center; padding: 40px 20px;">
+    <div style="width:100%; max-width:400px;">
+        <div class="card" style="border-radius:12px; padding:32px;">
+            <h2 style="text-align:center; color:#1a6b5a; margin-bottom:22px; font-size:1.5em;">&#9968; Login</h2>
+            <form action="{{ url_for('login') }}" method="post">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" placeholder="Enter username" required autofocus>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Enter password" required>
+                </div>
+                <button type="submit" class="btn btn-green" style="width:100%; padding:10px; font-size:0.97em; margin-top:6px;">Login</button>
+            </form>
+            <p style="text-align:center; margin-top:16px; font-size:0.88em; color:#666;">
+                No account? <a href="{{ url_for('register') }}" style="color:#1a6b5a; font-weight:bold;">Register here</a>
+            </p>
+            <p style="text-align:center; font-size:0.8em; color:#888; margin-top:10px;">
+                Admin: <b>admin</b> / <b>admin123</b> &nbsp;|&nbsp; Staff: <b>staff1</b> / <b>staff123</b>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

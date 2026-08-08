@@ -1,0 +1,32 @@
+{% extends 'admin/base_admin.html' %}
+{% block bodyclass %}bg-admin{% endblock %}
+{% block title %}Assign Staff - Admin{% endblock %}
+{% block admin_content %}
+<h2 class="page-title">&#128119; Assign Staff to Trek</h2>
+
+<div class="card" style="max-width:460px; margin-bottom:16px;">
+    <p><b>Trek:</b> {{ trek.name }}</p>
+    <p style="margin-top:6px;"><b>Location:</b> {{ trek.location }}</p>
+    <p style="margin-top:6px;"><b>Status:</b> <span class="badge badge-{{ trek.status | lower }}">{{ trek.status }}</span></p>
+</div>
+
+<div class="card" style="max-width:460px;">
+    <form action="" method="post">
+        <div class="form-group">
+            <label for="staff_id">Select Staff Member</label>
+            <select name="staff_id" id="staff_id">
+                <option value="">-- No Staff / Unassign --</option>
+                {% for staff in staff_list %}
+                <option value="{{ staff.id }}" {{ 'selected' if trek.assigned_staff_id == staff.id }}>
+                    {{ staff.username }} ({{ staff.email }})
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div style="display:flex; gap:10px;">
+            <button type="submit" class="btn btn-green">Assign</button>
+            <a href="{{ url_for('admin_treks') }}" class="btn btn-grey">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends 'admin/base_admin.html' %}
+{% block bodyclass %}bg-admin{% endblock %}
+{% block title %}All Bookings - Admin{% endblock %}
+{% block admin_content %}
+<h2 class="page-title">&#128203; All Bookings</h2>
+
+{% if bookings %}
+<div class="table-wrap">
+    <table>
+        <thead>
+            <tr><th>ID</th><th>User</th><th>Trek</th><th>Location</th><th>Booked On</th><th>Status</th></tr>
+        </thead>
+        <tbody>
+        {% for b in bookings %}
+        <tr>
+            <td style="color:#999;">#{{ b.id }}</td>
+            <td>{{ b.user.username }}</td>
+            <td><b>{{ b.trek.name }}</b></td>
+            <td>{{ b.trek.location }}</td>
+            <td>{{ b.booking_date.strftime('%d %b %Y') }}</td>
+            <td><span class="badge badge-{{ b.status | lower }}">{{ b.status }}</span></td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="alert alert-info">No bookings yet.</div>
+{% endif %}
+{% endblock %}

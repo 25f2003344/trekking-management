@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    <div class="layout">
+        <div class="sidebar">
+            <div class="section-label">Admin Panel</div>
+            <a href="{{ url_for('admin_dashboard') }}" class="{{ 'active' if request.endpoint == 'admin_dashboard' }}">&#128202; Dashboard</a>
+            <div class="section-label">Treks</div>
+            <a href="{{ url_for('admin_treks') }}"    class="{{ 'active' if request.endpoint == 'admin_treks' }}">&#9968; All Treks</a>
+            <a href="{{ url_for('admin_add_trek') }}" class="{{ 'active' if request.endpoint == 'admin_add_trek' }}">&#43; Add Trek</a>
+            <div class="section-label">People</div>
+            <a href="{{ url_for('admin_staff') }}"   class="{{ 'active' if request.endpoint == 'admin_staff' }}">&#128119; Staff</a>
+            <a href="{{ url_for('admin_users') }}"   class="{{ 'active' if request.endpoint == 'admin_users' }}">&#128101; Users</a>
+            <div class="section-label">Bookings</div>
+            <a href="{{ url_for('admin_bookings') }}" class="{{ 'active' if request.endpoint == 'admin_bookings' }}">&#128203; All Bookings</a>
+        </div>
+        <div class="main-content">
+            {% block admin_content %}{% endblock %}
+        </div>
+    </div>
+</div>
+{% endblock %}

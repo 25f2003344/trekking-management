@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}TrekManager{% endblock %}</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: Arial, sans-serif; background: #f0f4f0; color: #333; min-height: 100vh; display: flex; flex-direction: column; }
+
+        /* Navbar */
+        nav { background: #1a6b5a; padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; }
+        nav .brand { color: #fff; font-size: 1.3em; font-weight: bold; text-decoration: none; }
+        nav a { color: #cce8e3; text-decoration: none; margin-left: 14px; font-size: 0.93em; }
+        nav a:hover { color: #fff; }
+        nav .username-badge { background: rgba(255,255,255,0.2); color: #fff; padding: 4px 12px; border-radius: 20px; font-size: 0.85em; margin-left: 14px; }
+        nav .logout-btn { background: rgba(255,255,255,0.2); padding: 5px 14px; border-radius: 6px; color: #fff; margin-left: 10px; }
+
+        /* Flash */
+        .flash { padding: 10px 20px; margin: 8px 24px 0; border-radius: 6px; font-size: 0.9em; border-left: 4px solid; }
+        .flash.success { background: #d4edda; color: #155724; border-color: #28a745; }
+        .flash.danger  { background: #f8d7da; color: #721c24; border-color: #dc3545; }
+        .flash.warning { background: #fff3cd; color: #856404; border-color: #ffc107; }
+        .flash.info    { background: #d1ecf1; color: #0c5460; border-color: #17a2b8; }
+
+        /* Container */
+        .container { max-width: 1100px; margin: 22px auto; padding: 0 22px; flex: 1; }
+
+        /* Per-page background colors */
+        body.bg-login    { background: linear-gradient(135deg, #1a6b5a 0%, #2e86ab 40%, #f5a623 100%); }
+        body.bg-register { background: linear-gradient(135deg, #f5a623 0%, #e74c3c 40%, #1a6b5a 100%); }
+        body.bg-index    { background: linear-gradient(135deg, #1a3a2e 0%, #1a6b5a 60%, #2d9e88 100%); }
+        body.bg-admin    { background: #eaf4f0; }
+        body.bg-staff    { background: #eaf0f4; }
+        body.bg-user     { background: #f4f0ea; }
+        body.bg-profile  { background: #f0eaf4; }
+        body.bg-browse   { background: #eaf4ee; }
+
+        /* Page title */
+        .page-title { font-size: 1.4em; font-weight: bold; color: #1a6b5a; border-bottom: 2px solid #1a6b5a; padding-bottom: 8px; margin-bottom: 18px; }
+
+        /* Card */
+        .card { background: #fff; border-radius: 10px; padding: 20px 22px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); margin-bottom: 16px; }
+
+        /* Stat cards */
+        .stats-row { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 20px; }
+        .stat-card { background: #fff; border-radius: 10px; padding: 18px 22px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); text-align: center; flex: 1; min-width: 110px; border-top: 4px solid #1a6b5a; }
+        .stat-card .num { font-size: 2em; font-weight: bold; color: #1a6b5a; }
+        .stat-card .lbl { font-size: 0.82em; color: #666; margin-top: 4px; }
+        .stat-card.blue  { border-top-color: #3a7bd5; } .stat-card.blue .num  { color: #3a7bd5; }
+        .stat-card.amber { border-top-color: #e6961a; } .stat-card.amber .num { color: #e6961a; }
+        .stat-card.red   { border-top-color: #d9534f; } .stat-card.red .num   { color: #d9534f; }
+
+        /* Table */
+        .table-wrap { border-radius: 10px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.08); margin-bottom: 18px; }
+        table { width: 100%; border-collapse: collapse; background: #fff; font-size: 0.91em; }
+        thead tr { background: #1a6b5a; color: #fff; }
+        thead th { padding: 11px 13px; text-align: left; font-weight: 600; }
+        tbody tr { border-bottom: 1px solid #eee; }
+        tbody tr:last-child { border-bottom: none; }
+        tbody tr:hover { background: #f0faf7; }
+        tbody td { padding: 10px 13px; vertical-align: middle; }
+
+        /* Badges */
+        .badge { display: inline-block; padding: 2px 9px; border-radius: 12px; font-size: 0.78em; font-weight: bold; }
+        .badge-easy       { background: #d4edda; color: #155724; }
+        .badge-moderate   { background: #fff3cd; color: #856404; }
+        .badge-hard       { background: #f8d7da; color: #721c24; }
+        .badge-open       { background: #d4edda; color: #155724; }
+        .badge-closed     { background: #f8d7da; color: #721c24; }
+        .badge-approved   { background: #d1ecf1; color: #0c5460; }
+        .badge-pending    { background: #fff3cd; color: #856404; }
+        .badge-completed  { background: #e2d9f3; color: #4a235a; }
+        .badge-booked     { background: #d4edda; color: #155724; }
+        .badge-cancelled  { background: #f8d7da; color: #721c24; }
+        .badge-active     { background: #d4edda; color: #155724; }
+        .badge-blacklisted{ background: #f5c6cb; color: #491217; }
+
+        /* Buttons */
+        .btn { display: inline-block; padding: 7px 15px; border: none; border-radius: 6px; cursor: pointer; font-size: 0.88em; font-weight: 600; text-decoration: none; transition: opacity 0.15s; }
+        .btn:hover { opacity: 0.85; }
+        .btn-green { background: #1a6b5a; color: #fff; }
+        .btn-blue  { background: #3a7bd5; color: #fff; }
+        .btn-red   { background: #d9534f; color: #fff; }
+        .btn-amber { background: #e6961a; color: #fff; }
+        .btn-grey  { background: #8a9ba8; color: #fff; }
+        .btn-sm    { padding: 4px 10px; font-size: 0.82em; }
+
+        /* Forms */
+        .form-group { margin-bottom: 13px; }
+        .form-group label { display: block; font-weight: bold; font-size: 0.9em; margin-bottom: 4px; color: #444; }
+        .form-group input,
+        .form-group select,
+        .form-group textarea { width: 100%; padding: 8px 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 0.92em; background: #fafafa; outline: none; transition: border-color 0.2s; }
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus { border-color: #1a6b5a; background: #fff; }
+
+        /* Search bar */
+        .search-bar { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 14px; background: #fff; padding: 12px 16px; border-radius: 10px; box-shadow: 0 1px 5px rgba(0,0,0,0.07); }
+        .search-bar input, .search-bar select { padding: 7px 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 0.9em; outline: none; }
+        .search-bar input:focus, .search-bar select:focus { border-color: #1a6b5a; }
+        .search-bar label { font-size: 0.85em; font-weight: bold; color: #555; }
+
+        /* Sidebar layout */
+        .layout { display: flex; gap: 18px; align-items: flex-start; }
+        .sidebar { width: 185px; flex-shrink: 0; background: #1e2d2b; border-radius: 10px; padding: 8px 0; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .sidebar .section-label { color: #7a9e96; font-size: 0.7em; text-transform: uppercase; padding: 10px 14px 3px; font-weight: bold; letter-spacing: 1px; }
+        .sidebar a { display: block; color: #a8c4be; padding: 8px 14px; text-decoration: none; font-size: 0.88em; border-left: 3px solid transparent; transition: background 0.15s; }
+        .sidebar a:hover { background: #243330; color: #fff; }
+        .sidebar a.active { background: #1a3e38; color: #5ecbb8; border-left-color: #1a6b5a; font-weight: bold; }
+        .main-content { flex: 1; min-width: 0; }
+
+        /* Alert boxes */
+        .alert { padding: 10px 15px; border-radius: 8px; margin-bottom: 14px; font-size: 0.91em; border-left: 4px solid; }
+        .alert-warning { background: #fff3cd; color: #856404; border-color: #ffc107; }
+        .alert-info    { background: #d1ecf1; color: #0c5460; border-color: #17a2b8; }
+
+        /* Action row */
+        .action-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
+
+        /* Footer */
+        footer { background: #1e2d2b; color: #7a9e96; text-align: center; padding: 13px; font-size: 0.83em; margin-top: auto; }
+    </style>
+</head>
+<body class="{% block bodyclass %}bg-login{% endblock %}">
+
+<nav>
+    <a href="{{ url_for('index') }}" class="brand">&#9968; TrekManager</a>
+    <div>
+        {% if session.user_id %}
+            {% set user = current_user() %}
+            {% if user.role == 'admin' %}
+                <a href="{{ url_for('admin_dashboard') }}">Dashboard</a>
+                <a href="{{ url_for('admin_treks') }}">Treks</a>
+                <a href="{{ url_for('admin_staff') }}">Staff</a>
+                <a href="{{ url_for('admin_users') }}">Users</a>
+                <a href="{{ url_for('admin_bookings') }}">Bookings</a>
+            {% elif user.role == 'staff' %}
+                <a href="{{ url_for('staff_dashboard') }}">My Treks</a>
+            {% else %}
+                <a href="{{ url_for('user_dashboard') }}">Dashboard</a>
+                <a href="{{ url_for('user_browse_treks') }}">Browse Treks</a>
+                <a href="{{ url_for('user_profile') }}">Profile</a>
+            {% endif %}
+            <span class="username-badge">{{ user.username }} [{{ user.role }}]</span>
+            <a href="{{ url_for('logout') }}" class="logout-btn">Logout</a>
+        {% else %}
+            <a href="{{ url_for('login') }}">Login</a>
+            <a href="{{ url_for('register') }}" class="logout-btn">Register</a>
+        {% endif %}
+    </div>
+</nav>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="flash {{ category }}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+{% block content %}{% endblock %}
+
+<footer>&copy; 2026 Trekking Management App &mdash; All Rights Reserved</footer>
+</body>
+</html>

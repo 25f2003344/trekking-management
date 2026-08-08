@@ -1,0 +1,50 @@
+{% extends 'admin/base_admin.html' %}
+{% block bodyclass %}bg-admin{% endblock %}
+{% block title %}Manage Users - Admin{% endblock %}
+{% block admin_content %}
+<h2 class="page-title">&#128101; Manage Users (Trekkers)</h2>
+
+<div class="search-bar">
+    <form action="{{ url_for('admin_users') }}" method="get" style="display:flex; gap:8px; align-items:center;">
+        <input type="text" name="q" value="{{ q }}" placeholder="Search by name or email...">
+        <button type="submit" class="btn btn-blue btn-sm">Search</button>
+        {% if q %}<a href="{{ url_for('admin_users') }}" class="btn btn-grey btn-sm">Clear</a>{% endif %}
+    </form>
+</div>
+
+{% if users %}
+<div class="table-wrap">
+    <table>
+        <thead>
+            <tr><th>ID</th><th>Username</th><th>Email</th><th>Phone</th><th>Status</th><th>Bookings</th><th>Actions</th></tr>
+        </thead>
+        <tbody>
+        {% for user in users %}
+        <tr>
+            <td style="color:#999;">#{{ user.id }}</td>
+            <td><b>{{ user.username }}</b></td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.phone or '—' }}</td>
+            <td><span class="badge badge-{{ user.status }}">{{ user.status }}</span></td>
+            <td>{{ user.bookings | length }}</td>
+            <td>
+                {% if user.status == 'active' %}
+                <form action="{{ url_for('admin_blacklist_user', user_id=user.id) }}" method="post" style="display:inline;"
+                      onsubmit="return confirm('Blacklist {{ user.username }}?');">
+                    <button type="submit" class="btn btn-red btn-sm">Blacklist</button>
+                </form>
+                {% else %}
+                <form action="{{ url_for('admin_activate_user', user_id=user.id) }}" method="post" style="display:inline;">
+                    <button type="submit" class="btn btn-green btn-sm">Activate</button>
+                </form>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="alert alert-info">No users found.</div>
+{% endif %}
+{% endblock %}

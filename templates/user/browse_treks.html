@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% block bodyclass %}bg-browse{% endblock %}
+{% block title %}Browse Treks - TrekManager{% endblock %}
+{% block content %}
+<div class="container">
+    <div style="margin-bottom:16px;">
+        <a href="{{ url_for('user_dashboard') }}" class="btn btn-grey btn-sm">&larr; Dashboard</a>
+    </div>
+    <h2 class="page-title">&#9968; Browse Open Treks</h2>
+
+    <div class="search-bar">
+        <form action="{{ url_for('user_browse_treks') }}" method="get" style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+            <label>Search:</label>
+            <input type="text" name="q" value="{{ q }}" placeholder="Trek name or location...">
+            <label>Difficulty:</label>
+            <select name="difficulty">
+                <option value="">All</option>
+                <option value="Easy"     {{ 'selected' if difficulty=='Easy' }}>Easy</option>
+                <option value="Moderate" {{ 'selected' if difficulty=='Moderate' }}>Moderate</option>
+                <option value="Hard"     {{ 'selected' if difficulty=='Hard' }}>Hard</option>
+            </select>
+            <label>Location:</label>
+            <input type="text" name="location" value="{{ location }}" placeholder="Filter by location...">
+            <button type="submit" class="btn btn-blue btn-sm">Filter</button>
+            <a href="{{ url_for('user_browse_treks') }}" class="btn btn-grey btn-sm">Clear</a>
+        </form>
+    </div>
+
+    {% if treks %}
+    {% set user = current_user() %}
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr><th>Name</th><th>Location</th><th>Difficulty</th><th>Duration</th><th>Dates</th><th>Slots</th><th>Action</th></tr>
+            </thead>
+            <tbody>
+            {% for trek in treks %}
+            {% set already = trek.bookings | selectattr('user_id','equalto',user.id) | selectattr('status','equalto','Booked') | list | length %}
+            <tr>
+                <td><b>{{ trek.name }}</b>{% if trek.description %}<br><span style="color:#888; font-size:0.82em;">{{ trek.description[:60] }}{% if trek.description|length > 60 %}...{% endif %}</span>{% endif %}</td>
+                <td>{{ trek.location }}</td>
+                <td><span class="badge badge-{{ trek.difficulty | lower }}">{{ trek.difficulty }}</span></td>
+                <td>{{ trek.duration }}d</td>
+                <td>{{ trek.start_date.strftime('%d %b %Y') if trek.start_date else 'TBD' }}<br><span style="color:#aaa; font-size:0.82em;">{{ trek.end_date.strftime('%d %b %Y') if trek.end_date else '' }}</span></td>
+                <td>
+                    {{ trek.available_slots }}
+                    {% if trek.available_slots == 0 %}<br><span style="color:#d9534f; font-size:0.8em;">Full</span>{% endif %}
+                </td>
+                <td>
+                    {% if already %}
+                        <span style="color:tomato; font-weight:bold; font-size:0.88em;">&#10003; Booked</span>
+                    {% elif trek.available_slots == 0 %}
+                        <span style="color:orange; font-size:0.88em;">Full</span>
+                    {% else %}
+                        <form action="{{ url_for('user_book_trek', trek_id=trek.id) }}" method="post" style="display:inline;">
+                            <button type="submit" class="btn btn-green btn-sm">Book Now</button>
+                        </form>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="alert alert-info">No open treks found. Try clearing your filters.</div>
+    {% endif %}
+</div>
+{% endblock %}
