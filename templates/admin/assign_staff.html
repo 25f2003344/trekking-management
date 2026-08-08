@@ -3,13 +3,11 @@
 {% block title %}Assign Staff - Admin{% endblock %}
 {% block admin_content %}
 <h2 class="page-title">&#128119; Assign Staff to Trek</h2>
-
 <div class="card" style="max-width:460px; margin-bottom:16px;">
     <p><b>Trek:</b> {{ trek.name }}</p>
     <p style="margin-top:6px;"><b>Location:</b> {{ trek.location }}</p>
     <p style="margin-top:6px;"><b>Status:</b> <span class="badge badge-{{ trek.status | lower }}">{{ trek.status }}</span></p>
 </div>
-
 <div class="card" style="max-width:460px;">
     <form action="" method="post">
         <div class="form-group">

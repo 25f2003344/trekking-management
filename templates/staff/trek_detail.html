@@ -6,12 +6,10 @@
     <div style="margin-bottom:16px;">
         <a href="{{ url_for('staff_dashboard') }}" class="btn btn-grey btn-sm">&larr; Back</a>
     </div>
-
     <div style="background: linear-gradient(135deg, #1a6b5a, #2d9e88); border-radius: 10px; padding: 28px 24px; color: #fff; margin-bottom: 22px;">
         <h2 style="font-size:1.5em; font-weight:bold; margin-bottom:4px;">&#9968; {{ trek.name }}</h2>
         <p style="color:#cce8e3;">{{ trek.location }} &bull; {{ trek.duration }} days</p>
     </div>
-
     <div style="display:flex; gap:18px; flex-wrap:wrap; align-items:flex-start;">
         <div style="flex:1; min-width:260px;">
             <div class="card">
@@ -19,20 +17,15 @@
                 <p><b>Difficulty:</b> <span class="badge badge-{{ trek.difficulty | lower }}">{{ trek.difficulty }}</span></p>
                 <p style="margin-top:8px;"><b>Slots:</b> {{ trek.available_slots }} / {{ trek.total_slots }}</p>
                 <p style="margin-top:8px;"><b>Status:</b> <span class="badge badge-{{ trek.status | lower }}">{{ trek.status }}</span></p>
-                <p style="margin-top:8px;"><b>Dates:</b>
-                    {{ trek.start_date.strftime('%d %b %Y') if trek.start_date else 'TBD' }} &rarr;
-                    {{ trek.end_date.strftime('%d %b %Y') if trek.end_date else 'TBD' }}
-                </p>
+                <p style="margin-top:8px;"><b>Dates:</b> {{ trek.start_date.strftime('%d %b %Y') if trek.start_date else 'TBD' }} &rarr; {{ trek.end_date.strftime('%d %b %Y') if trek.end_date else 'TBD' }}</p>
                 {% if trek.description %}<p style="margin-top:8px; color:#666; font-size:0.9em;">{{ trek.description }}</p>{% endif %}
             </div>
-
             <div class="card">
                 <h3 style="color:#1a6b5a; margin-bottom:12px; font-size:1em;">Update Trek</h3>
                 <form action="{{ url_for('staff_update_trek', trek_id=trek.id) }}" method="post">
                     <div class="form-group">
                         <label for="available_slots">Available Slots</label>
-                        <input type="number" id="available_slots" name="available_slots"
-                               value="{{ trek.available_slots }}" min="0" max="{{ trek.total_slots }}">
+                        <input type="number" id="available_slots" name="available_slots" value="{{ trek.available_slots }}" min="0" max="{{ trek.total_slots }}">
                     </div>
                     <div class="form-group">
                         <label for="status">Trek Status</label>
@@ -47,18 +40,13 @@
                 </form>
             </div>
         </div>
-
         <div style="flex:2; min-width:300px;">
             <div class="card" style="padding:0; overflow:hidden;">
-                <div style="background:#1a6b5a; color:#fff; padding:13px 18px; font-weight:bold; font-size:0.95em;">
-                    &#128101; Registered Participants ({{ bookings | length }})
-                </div>
+                <div style="background:#1a6b5a; color:#fff; padding:13px 18px; font-weight:bold; font-size:0.95em;">&#128101; Registered Participants ({{ bookings | length }})</div>
                 {% if bookings %}
                 <div class="table-wrap" style="border-radius:0; box-shadow:none;">
                     <table>
-                        <thead>
-                            <tr><th>#</th><th>Username</th><th>Email</th><th>Phone</th><th>Booked On</th></tr>
-                        </thead>
+                        <thead><tr><th>#</th><th>Username</th><th>Email</th><th>Phone</th><th>Booked On</th></tr></thead>
                         <tbody>
                         {% for b in bookings %}
                         <tr>

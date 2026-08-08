@@ -7,7 +7,6 @@
         <a href="{{ url_for('user_dashboard') }}" class="btn btn-grey btn-sm">&larr; Dashboard</a>
     </div>
     <h2 class="page-title">&#9968; Browse Open Treks</h2>
-
     <div class="search-bar">
         <form action="{{ url_for('user_browse_treks') }}" method="get" style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
             <label>Search:</label>
@@ -25,14 +24,11 @@
             <a href="{{ url_for('user_browse_treks') }}" class="btn btn-grey btn-sm">Clear</a>
         </form>
     </div>
-
     {% if treks %}
     {% set user = current_user() %}
     <div class="table-wrap">
         <table>
-            <thead>
-                <tr><th>Name</th><th>Location</th><th>Difficulty</th><th>Duration</th><th>Dates</th><th>Slots</th><th>Action</th></tr>
-            </thead>
+            <thead><tr><th>Name</th><th>Location</th><th>Difficulty</th><th>Duration</th><th>Dates</th><th>Slots</th><th>Action</th></tr></thead>
             <tbody>
             {% for trek in treks %}
             {% set already = trek.bookings | selectattr('user_id','equalto',user.id) | selectattr('status','equalto','Booked') | list | length %}
@@ -41,16 +37,13 @@
                 <td>{{ trek.location }}</td>
                 <td><span class="badge badge-{{ trek.difficulty | lower }}">{{ trek.difficulty }}</span></td>
                 <td>{{ trek.duration }}d</td>
-                <td>{{ trek.start_date.strftime('%d %b %Y') if trek.start_date else 'TBD' }}<br><span style="color:#aaa; font-size:0.82em;">{{ trek.end_date.strftime('%d %b %Y') if trek.end_date else '' }}</span></td>
-                <td>
-                    {{ trek.available_slots }}
-                    {% if trek.available_slots == 0 %}<br><span style="color:#d9534f; font-size:0.8em;">Full</span>{% endif %}
-                </td>
+                <td>{{ trek.start_date.strftime('%d %b %Y') if trek.start_date else 'TBD' }}</td>
+                <td>{{ trek.available_slots }}{% if trek.available_slots == 0 %} <span style="color:#d9534f; font-size:0.8em;">(Full)</span>{% endif %}</td>
                 <td>
                     {% if already %}
-                        <span style="color:tomato; font-weight:bold; font-size:0.88em;">&#10003; Booked</span>
+                        <span style="color:#1a6b5a; font-weight:bold; font-size:0.88em;">&#10003; Booked</span>
                     {% elif trek.available_slots == 0 %}
-                        <span style="color:orange; font-size:0.88em;">Full</span>
+                        <span style="color:#d9534f; font-size:0.88em;">Full</span>
                     {% else %}
                         <form action="{{ url_for('user_book_trek', trek_id=trek.id) }}" method="post" style="display:inline;">
                             <button type="submit" class="btn btn-green btn-sm">Book Now</button>

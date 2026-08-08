@@ -3,19 +3,16 @@
 {% block title %}{{ 'Edit' if trek else 'Add' }} Trek - Admin{% endblock %}
 {% block admin_content %}
 <h2 class="page-title">{{ '&#9998; Edit Trek' if trek else '&#43; Add New Trek' }}</h2>
-
 <div class="card" style="max-width:580px;">
     <form action="" method="post">
         <div class="form-group">
             <label for="name">Trek Name</label>
-            <input type="text" id="name" name="name" required
-                   value="{{ trek.name if trek else '' }}" placeholder="e.g. Himalayan Base Camp">
+            <input type="text" id="name" name="name" required value="{{ trek.name if trek else '' }}" placeholder="e.g. Himalayan Base Camp">
         </div>
         <div style="display:flex; gap:14px;">
             <div class="form-group" style="flex:1;">
                 <label for="location">Location</label>
-                <input type="text" id="location" name="location" required
-                       value="{{ trek.location if trek else '' }}" placeholder="e.g. Nepal">
+                <input type="text" id="location" name="location" required value="{{ trek.location if trek else '' }}" placeholder="e.g. Nepal">
             </div>
             <div class="form-group" style="flex:1;">
                 <label for="difficulty">Difficulty</label>
@@ -29,25 +26,21 @@
         <div style="display:flex; gap:14px;">
             <div class="form-group" style="flex:1;">
                 <label for="duration">Duration (days)</label>
-                <input type="number" id="duration" name="duration" min="1" required
-                       value="{{ trek.duration if trek else 1 }}">
+                <input type="number" id="duration" name="duration" min="1" required value="{{ trek.duration if trek else 1 }}">
             </div>
             <div class="form-group" style="flex:1;">
                 <label for="slots">Total Slots</label>
-                <input type="number" id="slots" name="slots" min="1" required
-                       value="{{ trek.total_slots if trek else 10 }}">
+                <input type="number" id="slots" name="slots" min="1" required value="{{ trek.total_slots if trek else 10 }}">
             </div>
         </div>
         <div style="display:flex; gap:14px;">
             <div class="form-group" style="flex:1;">
                 <label for="start_date">Start Date</label>
-                <input type="date" id="start_date" name="start_date"
-                       value="{{ trek.start_date.strftime('%Y-%m-%d') if trek and trek.start_date else '' }}">
+                <input type="date" id="start_date" name="start_date" value="{{ trek.start_date.strftime('%Y-%m-%d') if trek and trek.start_date else '' }}">
             </div>
             <div class="form-group" style="flex:1;">
                 <label for="end_date">End Date</label>
-                <input type="date" id="end_date" name="end_date"
-                       value="{{ trek.end_date.strftime('%Y-%m-%d') if trek and trek.end_date else '' }}">
+                <input type="date" id="end_date" name="end_date" value="{{ trek.end_date.strftime('%Y-%m-%d') if trek and trek.end_date else '' }}">
             </div>
         </div>
         {% if trek %}
@@ -62,8 +55,7 @@
         {% endif %}
         <div class="form-group">
             <label for="description">Description (optional)</label>
-            <textarea id="description" name="description" rows="3"
-                      placeholder="Brief description of the trek">{{ trek.description if trek else '' }}</textarea>
+            <textarea id="description" name="description" rows="3" placeholder="Brief description">{{ trek.description if trek else '' }}</textarea>
         </div>
         <div style="display:flex; gap:10px;">
             <button type="submit" class="btn btn-green">{{ 'Save Changes' if trek else 'Create Trek' }}</button>

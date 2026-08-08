@@ -3,19 +3,15 @@
 {% block title %}Staff Dashboard - TrekManager{% endblock %}
 {% block content %}
 <div class="container">
-
     <div style="background: linear-gradient(135deg, #1a6b5a, #2d9e88); border-radius: 10px; padding: 28px 24px; color: #fff; margin-bottom: 22px;">
         <h2 style="font-size:1.5em; font-weight:bold; margin-bottom:4px;">&#128119; Staff Dashboard</h2>
         <p style="color:#cce8e3; font-size:0.92em;">Manage your assigned treks and view all available treks</p>
     </div>
-
     <h3 style="margin-bottom:12px; color:#1a6b5a;">My Assigned Treks</h3>
     {% if assigned_treks %}
     <div class="table-wrap" style="margin-bottom:28px;">
         <table>
-            <thead>
-                <tr><th>Trek Name</th><th>Location</th><th>Difficulty</th><th>Dates</th><th>Slots</th><th>Status</th><th>Participants</th><th>Actions</th></tr>
-            </thead>
+            <thead><tr><th>Trek Name</th><th>Location</th><th>Difficulty</th><th>Dates</th><th>Slots</th><th>Status</th><th>Participants</th><th>Actions</th></tr></thead>
             <tbody>
             {% for trek in assigned_treks %}
             {% set booked_count = trek.bookings | selectattr('status','equalto','Booked') | list | length %}
@@ -36,14 +32,11 @@
     {% else %}
     <div class="alert alert-info" style="margin-bottom:28px;">No treks assigned to you yet by admin.</div>
     {% endif %}
-
     <h3 style="margin-bottom:12px; color:#333;">All Treks (View)</h3>
     {% if all_treks %}
     <div class="table-wrap">
         <table>
-            <thead>
-                <tr><th>ID</th><th>Trek Name</th><th>Location</th><th>Difficulty</th><th>Duration</th><th>Slots</th><th>Status</th><th>Assigned To</th></tr>
-            </thead>
+            <thead><tr><th>ID</th><th>Trek Name</th><th>Location</th><th>Difficulty</th><th>Duration</th><th>Slots</th><th>Status</th><th>Assigned To</th></tr></thead>
             <tbody>
             {% for trek in all_treks %}
             <tr>

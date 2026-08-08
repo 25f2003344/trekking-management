@@ -6,12 +6,10 @@
     <div style="margin-bottom:16px;">
         <a href="{{ url_for('user_dashboard') }}" class="btn btn-grey btn-sm">&larr; Dashboard</a>
     </div>
-
     <div style="background: linear-gradient(135deg, #1a6b5a, #2d9e88); border-radius: 10px; padding: 28px 24px; color: #fff; margin-bottom: 22px;">
         <h2 style="font-size:1.5em; font-weight:bold;">&#9998; Edit Profile</h2>
         <p style="color:#cce8e3; font-size:0.92em; margin-top:4px;">{{ user.username }} &bull; {{ user.role }}</p>
     </div>
-
     <div class="card" style="max-width:460px;">
         <form action="{{ url_for('user_profile') }}" method="post">
             <div class="form-group">
