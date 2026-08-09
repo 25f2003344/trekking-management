@@ -227,8 +227,8 @@ def admin_delete_trek(trek_id):
         flash('Access denied.', 'danger')
         return redirect(url_for('login'))
     trek = Trek.query.get_or_404(trek_id)
-    for b in trek.bookings:
-        b.status = 'Cancelled'
+    # Delete all bookings for this trek first to avoid FK constraint error
+    Booking.query.filter_by(trek_id=trek_id).delete()
     db.session.delete(trek)
     db.session.commit()
     flash('Trek deleted.', 'success')
@@ -384,10 +384,19 @@ def staff_update_trek(trek_id):
         return redirect(url_for('staff_dashboard'))
     slots_str  = request.form.get('available_slots', '')
     new_status = request.form.get('status', '')
-    if slots_str:
+    total_str  = request.form.get('total_slots', '')
+
+    if total_str:
+        new_total = max(1, int(total_str))
+        booked = trek.total_slots - trek.available_slots  # number of confirmed bookings
+        trek.total_slots = new_total
+        trek.available_slots = max(0, new_total - booked)  # recalculate available
+    elif slots_str:
         trek.available_slots = max(0, int(slots_str))
+
     if new_status:
         trek.status = new_status
+
     db.session.commit()
     flash('Trek updated.', 'success')
     return redirect(url_for('staff_trek_detail', trek_id=trek_id))
